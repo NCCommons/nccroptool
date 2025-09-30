@@ -104,6 +104,19 @@ directive('ctCropper', ['$timeout', function($timeout) {
 
             function initCropper() {
                 destroy();
+                // SVG files might not contain an explicit width/height in
+                // which case the size of the browsers viewport is used.
+                // Enforce that we always use the server's calculation for image width/height.
+                Object.defineProperty(
+                        element[0],
+                        'naturalWidth',
+                        { value: element[0].getAttribute( 'width' ) }
+                );
+                Object.defineProperty(
+                        element[0],
+                        'naturalHeight',
+                        { value: element[0].getAttribute( 'height' ) }
+                );
                 scope.cropper = new Cropper(element[0], {
                     aspectRatio: scope.aspectRatio,
                     crop: cropperCrop,
@@ -435,8 +448,8 @@ controller('AppCtrl', ['$scope', '$http', '$timeout', '$q', '$window', '$httpPar
 
     function parseImageUrlOrTitle( params ) {
 
-        var pattern1 = /([a-z0-9.\-]+)\.(nccommons.org)\/wiki\/([^?]+)/,
-            pattern2 = /([a-z0-9.\-]+)\.(nccommons.org)\/w\/index.php/,
+        var pattern1 = /([a-z0-9.\-]+)\.(nccommons.org|mdwiki.org)\/wiki\/([^?]+)/,
+            pattern2 = /([a-z0-9.\-]+)\.(nccommons.org|mdwiki.org)\/w\/index.php/,
             matches1 = params.title.match(pattern1),
             matches2 = params.title.match(pattern2);
 

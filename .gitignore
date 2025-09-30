@@ -1,3 +1,4 @@
+config.ini
 data/*
 public_html/files/*
 vendor
